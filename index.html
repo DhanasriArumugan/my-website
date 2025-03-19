@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FarmUnity - Market Opportunity Breakdown</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .chart-container {
+      width: 800px;
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    p {
+      text-align: center;
+      color: #7f8c8d;
+    }
+  </style>
+</head>
+<body>
+  <h1>FarmUnity - Market Opportunity Breakdown (₹ Crore)</h1>
+  <p>Total Addressable Market (TAM), Serviceable Addressable Market (SAM), and Serviceable Obtainable Market (SOM) for FarmUnity in the Indian Market</p>
+  <div class="chart-container">
+    <canvas id="marketOpportunityChart"></canvas>
+  </div>
+
+  <script>
+    // Data for the stacked bar chart
+    const data = {
+      labels: ['TAM', 'SAM', 'SOM'],
+      datasets: [
+        {
+          label: 'Agritech (₹2.5L Cr) | 61% of TAM',
+          data: [250000, 0, 0], // TAM only
+          backgroundColor: '#2ecc71', // Green
+        },
+        {
+          label: 'Rural Microfinance (₹1.5L Cr) | 37% of TAM',
+          data: [150000, 0, 0], // TAM only
+          backgroundColor: '#3498db', // Blue
+        },
+        {
+          label: 'Farm Tourism (₹10k Cr) | 2% of TAM',
+          data: [10000, 0, 0], // TAM only
+          backgroundColor: '#e74c3c', // Red
+        },
+        {
+          label: 'Microloans (₹30k Cr) | 73% of SAM',
+          data: [0, 30000, 2500], // SAM and SOM
+          backgroundColor: '#2ecc71', // Green
+        },
+        {
+          label: 'Farm Tourism (₹7.5k Cr) | 18% of SAM',
+          data: [0, 7500, 1200], // SAM and SOM
+          backgroundColor: '#3498db', // Blue
+        },
+        {
+          label: 'CSR/ESG (₹3.5k Cr) | 9% of SAM',
+          data: [0, 3500, 400], // SAM and SOM
+          backgroundColor: '#e74c3c', // Red
+        },
+      ],
+    };
+
+    // Chart configuration
+    const config = {
+      type: 'bar',
+      data: data,
+      options: {
+        indexAxis: 'x',
+        scales: {
+          x: {
+            stacked: true,
+            title: {
+              display: true,
+              text: 'Market Segments',
+              font: {
+                size: 14,
+                weight: 'bold',
+              },
+            },
+          },
+          y: {
+            stacked: true,
+            title: {
+              display: true,
+              text: 'Market Size (₹ Crore)',
+              font: {
+                size: 14,
+                weight: 'bold',
+              },
+            },
+            ticks: {
+              callback: function (value) {
+                return `₹${value.toLocaleString()} Cr`;
+              },
+              font: {
+                size: 12,
+                weight: 'bold',
+              },
+            },
+            grid: {
+              color: '#ddd', // Light gray grid lines
+            },
+          },
+        },
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              boxWidth: 20,
+              padding: 10,
+              font: {
+                size: 12,
+                weight: 'bold',
+              },
+            },
+          },
+        },
+      },
+    };
+
+    // Render the chart
+    const ctx = document.getElementById('marketOpportunityChart').getContext('2d');
+    const chart = new Chart(ctx, config);
+
+    // Add static values on bars
+    chart.data.datasets.forEach((dataset, i) => {
+      const meta = chart.getDatasetMeta(i);
+      meta.data.forEach((bar, index) => {
+        const value = dataset.data[index];
+        if (value > 0) {
+          const x = bar.x;
+          const y = bar.y;
+          ctx.fillStyle = '#000';
+          ctx.font = 'bold 12px Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText(`₹${value.toLocaleString()} Cr`, x, y - 5);
+        }
+      });
+    });
+
+    // Highlight SOM values with larger, bold text
+    const somValues = [2500, 1200, 400]; // Microloans, Farm Tourism, CSR/ESG
+    const somColors = ['#2ecc71', '#3498db', '#e74c3c']; // Green, Blue, Red
+    const somLabels = ['Microloans', 'Farm Tourism', 'CSR/ESG'];
+
+    somValues.forEach((value, i) => {
+      const x = chart.scales.x.getPixelForValue(2); // SOM bar position
+      const y = chart.scales.y.getPixelForValue(value / 2); // Midpoint of the segment
+      ctx.fillStyle = somColors[i];
+      ctx.font = 'bold 16px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(`${somLabels[i]}: ₹${value.toLocaleString()} Cr`, x, y);
+    });
+  </script>
+</body>
+</html>
